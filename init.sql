@@ -1,0 +1,26 @@
+CREATE TABLE IF NOT EXISTS users(
+  id SERIAL PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS endpoints(
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  slug TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS requests(
+  id SERIAL PRIMARY KEY,
+  endpoint_id INTEGER NOT NULL REFERENCES endpoints(id) ON DELETE CASCADE,
+  method TEXT NOT NULL,
+  path TEXT NOT NULL,
+  query_string TEXT,
+  headers JSONB,
+  body TEXT,
+  remote_addr TEXT,
+  received_at TIMESTAMPTZ DEFAULT NOW()
+);
